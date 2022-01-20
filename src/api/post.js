@@ -3,7 +3,9 @@ import axios from 'axios';
 const { REACT_APP_API_URL, REACT_APP_API_PORT, REACT_APP_API_DCARD_URL } =
   process.env;
 
-const baseUrl = `${REACT_APP_API_URL}:${REACT_APP_API_PORT}?u=${REACT_APP_API_DCARD_URL}`;
+const baseUrl = `${REACT_APP_API_URL}${
+  REACT_APP_API_PORT ? `:${REACT_APP_API_PORT}` : ''
+}?u=${REACT_APP_API_DCARD_URL}`;
 
 /**
  * @typedef {Object} Post
@@ -23,9 +25,9 @@ const baseUrl = `${REACT_APP_API_URL}:${REACT_APP_API_PORT}?u=${REACT_APP_API_DC
  * @returns {Promise<Post[]>}
  */
 export const getPosts = async (lastId = '', popular = true) => {
-  const url = `${baseUrl}/posts?popular=${popular}${
-    lastId ? `&before=${lastId}` : ''
-  }`;
+  const url = `${baseUrl}/posts${encodeURIComponent(
+    `?popular=${popular}${lastId ? `&before=${lastId}` : ''}`
+  )}`;
   const response = await axios.get(url);
   return response.data || [];
 };

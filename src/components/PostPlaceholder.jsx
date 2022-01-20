@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, createRef } from 'react';
 import { usePost } from 'store/posts';
 
 import Loading from 'components/styled/Loading';
 import LoadingPlaceholder from 'components/styled/LoadingPlaceholder';
 
-const useIntersectionObserver = (triggerCallback, rootMargin = '50px') => {
+const useIntersectionObserver = (ref, triggerCallback, rootMargin = '50px') => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -17,6 +17,7 @@ const useIntersectionObserver = (triggerCallback, rootMargin = '50px') => {
         threshold: 0,
       }
     );
+    observer.observe(ref.current);
     return () => {
       observer.disconnect();
     };
@@ -25,9 +26,10 @@ const useIntersectionObserver = (triggerCallback, rootMargin = '50px') => {
 
 const PostPlaceholder = () => {
   const { isLoading, getDcardPosts } = usePost();
-  useIntersectionObserver(getDcardPosts);
+  const ref = createRef();
+  useIntersectionObserver(ref, getDcardPosts);
   return (
-    <LoadingPlaceholder>
+    <LoadingPlaceholder ref={ref}>
       {isLoading ? '載入中' : '已載入完畢'}
       {isLoading && <Loading />}
     </LoadingPlaceholder>

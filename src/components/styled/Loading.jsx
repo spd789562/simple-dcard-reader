@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 const Loading = styled.div`
-  width: ${(props = '16px') => props.width};
-  height: ${(props = '16px') => props.height};
+  width: ${({ width = '16px' }) => width};
+  height: ${({ height = '16px' }) => height};
   display: inline-block;
-  border-width: ${(props = '3px') => props.borderWidth};
-  border-color: ${(props = '#00324e') => props.borderColor};
+  border-width: ${({ borderWidth = '3px' }) => borderWidth};
+  border-color: ${({ borderColor = '#00324e' }) => borderColor};
   border-right-color: #ccc;
   animation: rotate 1s linear infinite;
   @keyframes rotate {

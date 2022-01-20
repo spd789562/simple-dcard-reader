@@ -18,11 +18,11 @@ const baseUrl = `${REACT_APP_API_URL}:${REACT_APP_API_PORT}?u=${REACT_APP_API_DC
 
 /**
  * getPosts
- * @param {number} lastId
+ * @param {number} [lastId]
  * @param {boolean} [popular=false]
  * @returns {Promise<Post[]>}
  */
-export const getPosts = async (lastId, popular = true) => {
+export const getPosts = async (lastId = '', popular = true) => {
   const url = `${baseUrl}/posts?popular=${popular}${
     lastId ? `&before=${lastId}` : ''
   }`;

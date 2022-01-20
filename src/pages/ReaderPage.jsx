@@ -1,14 +1,18 @@
-import styled from 'styled-components'
+import { PostProvider } from 'store/posts';
 
-const NormalDiv = styled.div`
-  background-color: #f0f0f0;
-  padding: 20px;
-`
+import Container from 'components/styled/Container';
+import PostList from 'components/PostList';
+import PostPlaceholder from 'components/PostPlaceholder';
 
-const ReaderPage = () => (
-  <NormalDiv>
-    <h1>Reader Page</h1>
-  </NormalDiv>
-)
+const ReaderPage = () => {
+  return (
+    <PostProvider>
+      <Container>
+        <PostList />
+        <PostPlaceholder />
+      </Container>
+    </PostProvider>
+  );
+};
 
-export default ReaderPage
+export default ReaderPage;

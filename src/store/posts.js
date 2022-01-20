@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React, { createContext, useEffect } from 'react';
 import { getPosts } from 'api/post';
 
 const prePage = 30;
@@ -12,7 +12,11 @@ const PostContext = createContext({
 });
 
 const makePostSkeleton = (counts) =>
-  new Array(counts).fill({}).map((_, i) => ({ skeleton: true }));
+  new Array(counts)
+    .fill({})
+    .map((_, i) => ({ id: new Date().getTime() + i, skeleton: true }));
+
+const sleep = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const PostProvider = ({ children }) => {
   const [posts, setPosts] = React.useState([]);
@@ -21,20 +25,30 @@ const PostProvider = ({ children }) => {
 
   const updatePosts = (appendPost) => {
     setPosts((_posts) =>
-      _posts.filter(({ skeleton }) => !skeleton).concat(appendPost)
+      _posts
+        .filter(({ skeleton }) => !skeleton)
+        .concat(
+          appendPost.filter(
+            ({ id }) => !_posts.find(({ id: existId }) => id === existId)
+          )
+        )
     );
   };
 
   const getDcardPosts = async (isFirst = false) => {
     if (!isLoading) {
       setIsLoading(true);
-      const lastId = isFirst ? '' : posts[posts.length].id;
+      const lastId = isFirst ? '' : posts[posts.length - 1].id;
       updatePosts(makePostSkeleton(prePage));
+      /* force wait to see skeleton */
+      await sleep(2000);
       const response = await getPosts(lastId, popular);
       updatePosts(response);
       setIsLoading(false);
     }
   };
+
+  /* popular change clear post and recall getDcardPosts */
 
   /* initial */
   useEffect(() => {

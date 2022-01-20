@@ -6,7 +6,9 @@ const prePage = 30;
 const PostContext = createContext({
   posts: [],
   isLoading: false,
+  popular: true,
   getPosts: () => {},
+  setPopular: () => {},
 });
 
 const makePostSkeleton = (counts) =>
@@ -14,6 +16,7 @@ const makePostSkeleton = (counts) =>
 
 const PostProvider = ({ children }) => {
   const [posts, setPosts] = React.useState([]);
+  const [popular, setPopular] = React.useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const updatePosts = (appendPost) => {
@@ -22,9 +25,10 @@ const PostProvider = ({ children }) => {
     );
   };
 
-  const getDcardPosts = async (lastId, popular = true) => {
+  const getDcardPosts = async (isFirst = false) => {
     if (!isLoading) {
       setIsLoading(true);
+      const lastId = isFirst ? '' : posts[posts.length].id;
       updatePosts(makePostSkeleton(prePage));
       const response = await getPosts(lastId, popular);
       updatePosts(response);
@@ -34,12 +38,13 @@ const PostProvider = ({ children }) => {
 
   /* initial */
   useEffect(() => {
-    getDcardPosts();
+    getDcardPosts(true);
   }, []);
-  git;
 
   return (
-    <PostContext.Provider value={{ posts, isLoading, getDcardPosts }}>
+    <PostContext.Provider
+      value={{ posts, popular, isLoading, getDcardPosts, setPopular }}
+    >
       {children}
     </PostContext.Provider>
   );
